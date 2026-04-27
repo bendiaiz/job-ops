@@ -29,6 +29,11 @@ describe('formatSalary', () => {
   it('handles zero salary', () => {
     expect(formatSalary(0)).toBe('$0/yr');
   });
+
+  // EUR is commonly needed for European job listings
+  it('formats with EUR currency', () => {
+    expect(formatSalary(45000, { currency: 'EUR' })).toBe('€45,000/yr');
+  });
 });
 
 describe('parseSalary', () => {
@@ -66,6 +71,7 @@ describe('normalizeToYearly', () => {
     expect(normalizeToYearly(5000, 'monthly')).toBe(60000);
   });
 
+  // assumes 40hr week × 52 weeks = 2080 working hours per year
   it('converts hourly to yearly assuming 40hr week, 52 weeks', () => {
     expect(normalizeToYearly(25, 'hourly')).toBe(52000);
   });
