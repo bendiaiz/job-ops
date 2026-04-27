@@ -34,6 +34,11 @@ describe('formatSalary', () => {
   it('formats with EUR currency', () => {
     expect(formatSalary(45000, { currency: 'EUR' })).toBe('€45,000/yr');
   });
+
+  // CAD is useful since I'm job hunting in Canada
+  it('formats with CAD currency', () => {
+    expect(formatSalary(75000, { currency: 'CAD' })).toBe('CA$75,000/yr');
+  });
 });
 
 describe('parseSalary', () => {
@@ -59,6 +64,11 @@ describe('parseSalary', () => {
 
   it('returns null for an empty string', () => {
     expect(parseSalary('')).toBeNull();
+  });
+
+  // job postings sometimes say "competitive" instead of a number
+  it('returns null for "competitive" salary string', () => {
+    expect(parseSalary('competitive')).toBeNull();
   });
 });
 
