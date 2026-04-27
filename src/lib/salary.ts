@@ -18,13 +18,14 @@ export interface FormattedSalary {
   period: string;
 }
 
-const DEFAULT_CURRENCY = 'USD';
+// Changed default currency to GBP for UK-based job searching
+const DEFAULT_CURRENCY = 'GBP';
 const DEFAULT_PERIOD = 'yearly';
 
 /**
  * Formats a salary value or range into a human-readable string
  * @param salary - A single number or a SalaryRange object
- * @param currency - Currency code (defaults to USD)
+ * @param currency - Currency code (defaults to GBP)
  * @param period - Pay period (defaults to yearly)
  * @returns Formatted salary string
  */
@@ -33,7 +34,7 @@ export function formatSalary(
   currency: string = DEFAULT_CURRENCY,
   period: string = DEFAULT_PERIOD
 ): string {
-  const formatter = new Intl.NumberFormat('en-US', {
+  const formatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency,
     maximumFractionDigits: 0,
@@ -47,7 +48,7 @@ export function formatSalary(
   const curr = salaryCurrency ?? currency;
   const per = salaryPeriod ?? period;
 
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
+  const currencyFormatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: curr,
     maximumFractionDigits: 0,
@@ -72,9 +73,9 @@ export function parseSalary(salaryStr: string): SalaryRange | null {
   const normalized = salaryStr.replace(/,/g, '').toLowerCase().trim();
 
   // Match patterns like $50k, $50,000, 50000
-  const singlePattern = /\$?([\d.]+)(k)?/;
+  const singlePattern = /\$?(\d[\d.]*)(k)?/;
   // Match range patterns like $50k - $80k or $50,000 – $80,000
-  const rangePattern = /\$?([\d.]+)(k)?\s*[-–]\s*\$?([\d.]+)(k)?/;
+  const rangePattern = /[£$]?([\d.]+)(k)?\s*[-–]\s*[£$]?([\d.]+)(k)?/;
 
   const rangeMatch = normalized.match(rangePattern);
   if (rangeMatch) {
@@ -97,20 +98,4 @@ export function parseSalary(salaryStr: string): SalaryRange | null {
  * @param salary - SalaryRange to normalize
  * @returns SalaryRange with yearly period
  */
-export function normalizeToYearly(salary: SalaryRange): SalaryRange {
-  const multipliers: Record<string, number> = {
-    hourly: 2080,   // 40hrs * 52 weeks
-    monthly: 12,
-    yearly: 1,
-  };
-
-  const period = salary.period ?? DEFAULT_PERIOD;
-  const multiplier = multipliers[period] ?? 1;
-
-  return {
-    ...salary,
-    min: salary.min * multiplier,
-    max: salary.max * multiplier,
-    period: 'yearly',
-  };
-}
+export function normalizeToYearl
